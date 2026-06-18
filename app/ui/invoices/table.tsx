@@ -2,7 +2,7 @@ import Image from 'next/image';
 import { UpdateInvoice, DeleteInvoice } from '@/app/ui/invoices/buttons';
 import InvoiceStatus from '@/app/ui/invoices/status';
 import { formatDateToLocal, formatCurrency } from '@/app/lib/utils';
-import { fetchFilteredInvoices } from '@/app/lib/data';
+import { fetchFilteredInvoices } from '@/app/lib/data'; // 💡 フィルタリングされたデータを取る関数をインポート
 
 export default async function InvoicesTable({
   query,
@@ -11,12 +11,14 @@ export default async function InvoicesTable({
   query: string;
   currentPage: number;
 }) {
+  // 💡 検索ワード（query）と現在のページ（currentPage）をもとに、データベースからピンポイントで6件のデータを取得します
   const invoices = await fetchFilteredInvoices(query, currentPage);
 
   return (
     <div className="mt-6 flow-root">
       <div className="inline-block min-w-full align-middle">
         <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
+          {/* モバイル用レイアウト */}
           <div className="md:hidden">
             {invoices?.map((invoice) => (
               <div
@@ -54,6 +56,8 @@ export default async function InvoicesTable({
               </div>
             ))}
           </div>
+
+          {/* PC用レイアウト */}
           <table className="hidden min-w-full text-gray-900 md:table">
             <thead className="rounded-lg text-left text-sm font-normal">
               <tr>
@@ -72,7 +76,7 @@ export default async function InvoicesTable({
                 <th scope="col" className="px-3 py-5 font-medium">
                   Status
                 </th>
-                <th scope="col" className="relative py-3 pl-6 pr-3">
+                <th scope="col" className="relative py-3 pl-3 pr-4">
                   <span className="sr-only">Edit</span>
                 </th>
               </tr>
@@ -107,7 +111,7 @@ export default async function InvoicesTable({
                   <td className="whitespace-nowrap px-3 py-3">
                     <InvoiceStatus status={invoice.status} />
                   </td>
-                  <td className="whitespace-nowrap py-3 pl-6 pr-3">
+                  <td className="whitespace-nowrap py-3 pl-3 pr-6">
                     <div className="flex justify-end gap-3">
                       <UpdateInvoice id={invoice.id} />
                       <DeleteInvoice id={invoice.id} />
