@@ -1,10 +1,11 @@
 import { Card } from '@/app/ui/dashboard/cards';
 import RevenueChart from '@/app/ui/dashboard/revenue-chart';
 import LatestInvoices from '@/app/ui/dashboard/latest-invoices';
+import WeatherCard from '@/app/ui/dashboard/weather-card';
 import { lusitana } from '@/app/ui/fonts';
-import { fetchCardData } from '@/app/lib/data'; // fetchRevenue と fetchLatestInvoices はここでは呼ばない
-import { Suspense } from 'react'; // 💡 部分ローディングのための機能をインポート
-import { RevenueChartSkeleton, LatestInvoicesSkeleton } from '@/app/ui/skeletons'; // 💡 ローディング中に見せる枠（骨組み）
+import { fetchCardData } from '@/app/lib/data';
+import { Suspense } from 'react';
+import { RevenueChartSkeleton, LatestInvoicesSkeleton, WeatherCardSkeleton } from '@/app/ui/skeletons';
 
 export default async function Page() {
   // カードのデータだけを先に取得（グラフと請求書は各コンポーネントの中で直接取得するようにチュートリアル後半で変化します）
@@ -31,6 +32,13 @@ export default async function Page() {
           value={numberOfCustomers}
           type="customers"
         />
+      </div>
+
+      {/* 天気カード */}
+      <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-4 lg:grid-cols-8">
+        <Suspense fallback={<WeatherCardSkeleton />}>
+          <WeatherCard />
+        </Suspense>
       </div>
 
       {/* 下部のコンテンツエリア */}

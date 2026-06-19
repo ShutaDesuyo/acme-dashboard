@@ -102,6 +102,96 @@ export default function DashboardSkeleton() {
   );
 }
 
+export function CustomersTableSkeleton() {
+  return (
+    <div className={`${shimmer} relative w-full overflow-hidden`}>
+      <div className="mb-4 h-8 w-36 rounded-md bg-gray-100" />
+      <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
+        <div className="md:hidden">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className="mb-2 w-full rounded-md bg-white p-4">
+              <div className="flex items-center justify-between border-b pb-4">
+                <div className="flex items-center gap-3">
+                  <div className="h-7 w-7 rounded-full bg-gray-200" />
+                  <div className="h-5 w-28 rounded-md bg-gray-200" />
+                </div>
+              </div>
+              <div className="flex w-full items-center justify-between border-b py-5">
+                <div className="h-4 w-24 rounded-md bg-gray-200" />
+                <div className="h-4 w-20 rounded-md bg-gray-200" />
+              </div>
+              <div className="pt-4">
+                <div className="h-4 w-16 rounded-md bg-gray-200" />
+              </div>
+            </div>
+          ))}
+        </div>
+        <table className="hidden min-w-full rounded-md text-gray-900 md:table">
+          <thead>
+            <tr>
+              {['Name', 'Email', 'Total Invoices', 'Total Pending', 'Total Paid'].map((h) => (
+                <th key={h} className="px-4 py-5">
+                  <div className="h-4 w-20 rounded-md bg-gray-200" />
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-200">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <tr key={i}>
+                <td className="whitespace-nowrap bg-white py-5 pl-4 pr-3">
+                  <div className="flex items-center gap-3">
+                    <div className="h-7 w-7 rounded-full bg-gray-100" />
+                    <div className="h-5 w-24 rounded-md bg-gray-100" />
+                  </div>
+                </td>
+                <td className="whitespace-nowrap bg-white px-4 py-5">
+                  <div className="h-5 w-32 rounded-md bg-gray-100" />
+                </td>
+                <td className="whitespace-nowrap bg-white px-4 py-5">
+                  <div className="h-5 w-10 rounded-md bg-gray-100" />
+                </td>
+                <td className="whitespace-nowrap bg-white px-4 py-5">
+                  <div className="h-5 w-20 rounded-md bg-gray-100" />
+                </td>
+                <td className="whitespace-nowrap bg-white px-4 py-5">
+                  <div className="h-5 w-20 rounded-md bg-gray-100" />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+export function WeatherCardSkeleton() {
+  return (
+    <div
+      className={`${shimmer} relative col-span-full overflow-hidden rounded-xl bg-blue-50 p-4 shadow-sm md:col-span-4`}
+    >
+      <div className="mb-3 flex items-center gap-2">
+        <div className="h-6 w-6 rounded-full bg-blue-200" />
+        <div className="h-4 w-32 rounded-md bg-blue-200" />
+      </div>
+      <div className="flex items-end gap-4">
+        <div className="h-12 w-24 rounded-md bg-blue-200" />
+        <div className="mb-1 space-y-1">
+          <div className="h-4 w-16 rounded-md bg-blue-200" />
+          <div className="h-4 w-20 rounded-md bg-blue-200" />
+        </div>
+      </div>
+      <div className="mt-3 flex gap-6">
+        <div className="h-3 w-16 rounded-md bg-blue-200" />
+        <div className="h-3 w-16 rounded-md bg-blue-200" />
+        <div className="h-3 w-14 rounded-md bg-blue-200" />
+        <div className="h-3 w-20 rounded-md bg-blue-200" />
+      </div>
+    </div>
+  );
+}
+
 export function TableRowSkeleton() {
   return (
     <tr className="w-full border-b border-gray-100 last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg">

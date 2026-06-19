@@ -108,6 +108,82 @@ export async function updateInvoice(id: string, formData: FormData) {
   redirect('/dashboard/invoices');
 }
 
+const CustomerSchema = z.object({
+  name: z.string().min(1, { message: '名前を入力してください。' }),
+  email: z.string().email({ message: '有効なメールアドレスを入力してください。' }),
+  image_url: z
+    .string()
+    .url({ message: '有効なURLを入力してください。' })
+    .or(z.literal(''))
+    .optional(),
+});
+
+export type CustomerFormState = {
+  errors?: { name?: string[]; email?: string[]; image_url?: string[] };
+  message?: string | null;
+};
+
+export async function updateCustomer(
+  id: string,
+  _prevState: CustomerFormState,
+  formData: FormData,
+): Promise<CustomerFormState> {
+  const validated = CustomerSchema.safeParse({
+    name: formData.get('name'),
+    email: formData.get('email'),
+    image_url: formData.get('image_url'),
+  });
+
+  if (!validated.success) {
+    return {
+      errors: validated.error.flatten().fieldErrors,
+      message: '入力内容を確認してください。',
+    };
+  }
+
+  const { name, email, image_url } = validated.data;
+
+  try {
+    if (image_url) {
+      await sql`UPDATE customers SET name=${name}, email=${email}, image_url=${image_url} WHERE id=${id}`;
+    } else {
+      await sql`UPDATE customers SET name=${name}, email=${email} WHERE id=${id}`;
+    }
+  } catch {
+    return { message: 'データベースエラー：顧客の更新に失敗しました。' };
+  }
+
+  revalidatePath('/dashboard/customers');
+  redirect(`/dashboard/customers/${id}`);
+}
+
+export type DeleteCustomerState = { error?: string } | undefined;
+
+export async function deleteCustomer(
+  id: string,
+  _prevState: DeleteCustomerState,
+  _formData: FormData,
+): Promise<DeleteCustomerState> {
+  const { count } = (
+    await sql`SELECT COUNT(*) AS count FROM invoices WHERE customer_id = ${id}`
+  ).rows[0];
+
+  if (Number(count) > 0) {
+    return {
+      error: `この顧客には ${count} 件の請求書が紐づいています。先に請求書をすべて削除してください。`,
+    };
+  }
+
+  try {
+    await sql`DELETE FROM customers WHERE id = ${id}`;
+  } catch (error) {
+    return { error: 'データベースエラー：顧客の削除に失敗しました。' };
+  }
+
+  revalidatePath('/dashboard/customers');
+  redirect('/dashboard/customers');
+}
+
 export async function deleteInvoice(id: string) {
   try {
     await sql`DELETE FROM invoices WHERE id = ${id}`;

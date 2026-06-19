@@ -168,6 +168,36 @@ export async function fetchFilteredCustomers(query: string) {
   }
 }
 
+export async function fetchCustomerById(id: string) {
+  try {
+    noStore();
+    const data = await sql<CustomersTableType>`
+      SELECT
+        customers.id,
+        customers.name,
+        customers.email,
+        customers.image_url,
+        COUNT(invoices.id) AS total_invoices,
+        SUM(CASE WHEN invoices.status = 'pending' THEN invoices.amount ELSE 0 END) AS total_pending,
+        SUM(CASE WHEN invoices.status = 'paid' THEN invoices.amount ELSE 0 END) AS total_paid
+      FROM customers
+      LEFT JOIN invoices ON customers.id = invoices.customer_id
+      WHERE customers.id = ${id}
+      GROUP BY customers.id, customers.name, customers.email, customers.image_url
+    `;
+    if (!data.rows[0]) return null;
+    const customer = data.rows[0];
+    return {
+      ...customer,
+      total_pending: formatCurrency(customer.total_pending),
+      total_paid: formatCurrency(customer.total_paid),
+    };
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch customer.');
+  }
+}
+
 // 💡 フォームのセレクトボックス用に、全顧客のIDと名前だけをサクッと取得する関数（追加）
 export async function fetchCustomers() {
   try {
